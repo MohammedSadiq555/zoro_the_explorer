@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZORO the explorer</title>
+</head>
+<body>
+    <div class="game-container">
+        <img class="character" src="https://media.tenor.com/O8gy1gagVDoAAAAi/one-piece-pixel.gif" alt="">
+        <img class="destination" src="https://media.tenor.com/ZP4n-zGRUcwAAAAj/dasd.gif" alt="">
+        
+    </div>
+    <div class="controls">
+        <button class="up"><span class="ups">Up</span></button>
+        <button class="down"><span class="ups">Right</span></button>
+        <button class="left"><span class="ups">Left</span></button>
+        <button class="right"><span class="ups">Down</span></button>
+    </div>
+    <style>
+
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        
+.game-container {
+    position: relative;
+    top: 1px;
+    background-image: url("zte.png");
+    overflow: hidden;
+    width: 100%;
+    height: 650px;
+    border: 6px solid black;
+}
+
+.character {
+    position: absolute;
+
+    width: 150px;
+filter: drop-shadow(5px 5px 10px white);
+    /* bottom: 10;
+    left: 0; */
+    z-index: 3;
+}
+
+
+.destination {
+    position: absolute;
+    width: 150px;
+    top: 0;
+    right: 0;
+}
+
+.controls {
+    position: absolute;
+    /* border: 4px solid red; */
+    /* display: flex; */
+    bottom: 100px;
+    right: 100px;
+    width: 215px;
+    flex-wrap: wrap;
+    height: 200px;
+    /* border-radius: 50%; */
+    transform: rotate(45deg);
+    padding: 20px;
+    
+}
+
+button {
+    /* padding: 10px; */
+    position: relative;
+    width: 47%;
+    height: 50%;
+    margin-bottom: 3px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.25s ease-out;
+}
+
+button:first-child{
+    border-top-left-radius: 80%;
+
+}
+
+button:first-child:hover{
+
+  transform: translate(-10px, -10px);
+
+
+}
+
+button:nth-child(2){
+    border-top-right-radius: 80%;
+}
+
+button:nth-child(2):hover{
+
+transform: translate(10px, -10px);
+
+}
+
+button:nth-child(3){
+    border-bottom-left-radius: 80%;
+}
+
+button:nth-child(3):hover{
+
+transform: translate(-10px, 10px);
+
+}
+
+button:nth-child(4){
+    border-bottom-right-radius: 80%;
+}
+
+button:nth-child(4):hover{
+
+transform: translate(10px, 10px);
+
+}
+
+
+.ups{
+    display: inline-block;
+    transform: rotate(-45deg);
+}
+
+    </style>
+    <script>
+        
+const character = document.querySelector('.character');
+const destination = document.querySelector('.destination');
+const controls = document.querySelectorAll('.controls button');
+const gameContainer = document.querySelector('.game-container');
+
+let characterX = 500;
+let characterY = 200;
+let speed = 8;
+let score = 0;
+
+// Set initial character position
+character.style.left = characterX + 'px';
+character.style.bottom = characterY + 'px';
+
+// Add event listeners to buttons
+controls.forEach(button => {
+    button.addEventListener('mousedown', handleButtonDown);
+    button.addEventListener('mouseup', handleButtonUp);
+});
+
+// Handle button down event
+function handleButtonDown() {
+    const randomNumber = Math.floor(Math.random()*4)+1;
+    switch (randomNumber) {
+        case 1:
+            moveUp();
+            break;
+        case 2:
+            moveDown();
+            break;
+        case 3:
+            moveLeft();
+            break;
+        case 4:
+            moveRight();
+            break;
+    }
+}
+
+// Handle button up event
+function handleButtonUp() {
+    // Stop movement when button is released
+    clearInterval(movementInterval);
+}
+
+// Movement functions
+function moveUp() {
+    movementInterval = setInterval(() => {
+        characterY += speed;
+        character.style.bottom = characterY + 'px';
+        checkCollision();
+    }, 16); // 16ms = 60fps
+}
+
+function moveDown() {
+    movementInterval = setInterval(() => {
+        characterY -= speed;
+        character.style.bottom = characterY + 'px';
+        checkCollision();
+    }, 16);
+}
+
+function moveLeft() {
+    movementInterval = setInterval(() => {
+        characterX -= speed;
+        character.style.left = characterX + 'px';
+        checkCollision();
+    }, 16);
+}
+
+function moveRight() {
+    movementInterval = setInterval(() => {
+        characterX += speed;
+        character.style.left = characterX + 'px';
+        checkCollision();
+    }, 16);
+}
+
+// Check collision with destination
+function checkCollision() {
+    const characterRect = character.getBoundingClientRect();
+    const destinationRect = destination.getBoundingClientRect();
+
+    if (characterRect.x + characterRect.width >= destinationRect.x &&
+        characterRect.y <= destinationRect.y + destinationRect.height &&
+        characterRect.y + characterRect.height >= destinationRect.y) {
+        // Collision detected! Increase score and reset character position
+        score++;
+        console.log(`Score: ${score}`);
+        characterX = 0;
+        characterY = 0;
+        character.style.left = characterX + 'px';
+        character.style.bottom = characterY + 'px';
+    }
+}
+    </script>
+</body>
+</html>
